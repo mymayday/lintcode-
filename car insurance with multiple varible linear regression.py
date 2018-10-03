@@ -25,7 +25,6 @@ data_train.dropna(axis=0,how='any',subset=['Score'],inplace=True)         #删�
 #车辆的特征中有数值型和类别性，数值型的特征注意进行范围标准化，类别型的特征转化为one-hot encoding的形式
 X=data_train.drop(['Score','Id'], axis=1)                
 X=pd.get_dummies(X) 
-
 X=X.apply(lambda x: (x - np.min(x)) / (np.max(x) - np.min(x)))        #min-max标准化（Min-Max Normalization）
                                                                      #也称为离差标准化，是对原始数据的线性变换，使结果值映射到[0 - 1]
 
@@ -36,28 +35,22 @@ print(X[X.isnull()==True].count())#检验缺失值，若输出为0，说明该�
 # 将数据分为训练集和校验集
 train_X, valid_X, train_Y, valid_Y = train_test_split(X.values, Y.values, test_size=0.25)
 
+#建立线性回归模型
 model = LinearRegression() 
 model.fit(train_X,train_Y)
-a  = model.intercept_#截距 
-b = model.coef_#回归系数 
+a  = model.intercept_        #截距 
+b = model.coef_              #回归系数 
 print("最佳拟合线:截距",a,",回归系数：",b)
 
 score = model.score(valid_X,valid_Y )
+#输出校验集的预测值
 Y_pred = model.predict(valid_X)
 
-#显示图像
-plt.plot(range(len(Y_pred)),Y_pred,'b',label="predict")
-plt.savefig("predict.jpg")
-plt.show()
-
-
-plt.plot(range(len(valid_Y)),valid_Y,'green',label="test data")
-plt.legend(loc=2)
-plt.show()#显示预测值与测试值曲线
-
+#输出校验集的均方根误差
 rms = np.sqrt(mean_squared_error(valid_Y, Y_pred))
 print(rms)
 
+#用刚训练的模型对test.csv中的数据进行测试
 test_X=data_test.drop(['Id'], axis=1)                
 test_X=pd.get_dummies(test_X)
 test_X=test_X.apply(lambda x: (x - np.min(x)) / (np.max(x) - np.min(x))) 

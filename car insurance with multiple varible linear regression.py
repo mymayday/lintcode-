@@ -12,6 +12,7 @@ data_test=pd.read_csv('test.csv')             #读取测试数据
 
 Y=data_train.Score                       #读取训练数据中的Score字段         输出
 
+#对数据进行预处理
 data_train.dropna(axis=0,how='any',subset=['Score'],inplace=True)         #删除Score为空值的数据行
                                    #.dropna的用法：DataFrame.dropna(axis=0, how='any', thresh=None, subset=None, inplace=False)
                                    #功能：根据各标签的值中是否存在缺失数据对轴标签进行过滤，可通过阈值调节对缺失值的容忍度
@@ -25,7 +26,7 @@ data_train.dropna(axis=0,how='any',subset=['Score'],inplace=True)         #删�
 #车辆的特征中有数值型和类别性，数值型的特征注意进行范围标准化，类别型的特征转化为one-hot encoding的形式
 X=data_train.drop(['Score','Id'], axis=1)                
 X=pd.get_dummies(X) 
-X=X.apply(lambda x: (x - np.min(x)) / (np.max(x) - np.min(x)))        #min-max标准化（Min-Max Normalization）
+X=X.apply(lambda x: (x - np.min(x)) / (np.max(x) - np.min(x)))       #min-max标准化（Min-Max Normalization）
                                                                      #也称为离差标准化，是对原始数据的线性变换，使结果值映射到[0 - 1]
 
 #检验数据
@@ -55,9 +56,12 @@ test_X=data_test.drop(['Id'], axis=1)
 test_X=pd.get_dummies(test_X)
 test_X=test_X.apply(lambda x: (x - np.min(x)) / (np.max(x) - np.min(x))) 
 
+#输出测试集的分数
 Score = model.predict(test_X)
+
+#将Id,Score存入csv文件
 Id=data_test.Id
 dataset=list(zip(Id,Score))
 df=pd.DataFrame(data=dataset,columns=('Id','Score'))
-#将数据写入csv文件中，不需要索引列
-df.to_csv('submission.csv',index=False)
+
+df.to_csv('submission.csv',index=False)          #index=False，根据要求索引列不需要存入

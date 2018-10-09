@@ -102,7 +102,8 @@ print(rms)
 #用刚训练的模型对test.csv中的数据进行测试
 q=np.ones(test_X.shape[0])
 test_X=np.column_stack((q,test_X))
-Score=test_X.dot(B_new.T)           #输出测试集的分数
+Score=test_X.dot(B_new.T)
+Score=Score.reshape(Score.shape[0])       #输出测试集的分数
 
 #将Id,Score存入csv文件
 Id=data_test.Id

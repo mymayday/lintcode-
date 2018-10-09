@@ -46,23 +46,15 @@ test_X=X_total[32000:40000]
 train_X, valid_X, train_Y, valid_Y = train_test_split(X.values, Y.values, test_size=0.25)
 
 #多元线性回归
-def compute_initialB(x,y):
-    row,col=x.shape
-    add=np.ones(row)
-    x=np.column_stack((add,x))
-    a=x.T.dot(x)
-    a=np.matrix(a)
-    B=a.I.dot(x.T).dot(y)     #B=(X^T*X)^(-1)*X^T *Y
-    B=np.array(B)
-    return B,x,y
-    
-def multiplelr(dataset_x,dataset_y,B):
+#梯度下降法    
+def multiplelr(dataset_x,dataset_y):
     
     #参数初始化   
     alpha=0.01                          #步长初始化
     theta=1e-100                           #阈值初始化
     r,c=x.shape
     num_iter=r                     #最大迭代次数
+    B=np.random.random([c,1])
     
     #计算梯度方向delta_B
     delta_B=(-dataset_x.T.dot(dataset_y.reshape(r,1))+dataset_x.T.dot(dataset_x).dot(B.T))/r
@@ -88,21 +80,16 @@ def multiplelr(dataset_x,dataset_y,B):
     return B
    
 #线性回归模型的构建
-B,x,y=compute_initialB(train_X,train_Y)
-B_new=multiplelr(x,y,B)
-add=np.ones(valid_X.shape[0])
-valid_X=np.column_stack((add,valid_X))
+B_new=multiplelr(train_X,train_Y)
 Y_pred=valid_X.dot(B_new.T)
 
 #输出校验集的均方根误差
 rms = np.sqrt(mean_squared_error(valid_Y, Y_pred))
 print(rms)
 
-
 #用刚训练的模型对test.csv中的数据进行测试
-q=np.ones(test_X.shape[0])
-test_X=np.column_stack((q,test_X))
 Score=test_X.dot(B_new.T)
+Score=np.array(Score)
 Score=Score.reshape(Score.shape[0])       #输出测试集的分数
 
 #将Id,Score存入csv文件

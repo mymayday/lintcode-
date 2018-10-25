@@ -140,4 +140,4 @@ dataset=list(zip(Id,data_test.Label))
 df=pd.DataFrame(data=dataset,columns=('SmsId','Label'))
 #将数据写入csv文件中，不需要索引列
 df.to_csv('submission.csv',index=False)
-print('Accuracy score: ', format(accuracy_score(valid_Y, Y_pred)))
+

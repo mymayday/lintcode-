@@ -122,8 +122,9 @@ P_p,P_0_c,P_1_c=NaiveBayes(train_X,train_Y)
 Y_pred=predict(valid_X,P_p,P_0_c,P_1_c)
 
 from sklearn.metrics import accuracy_score
+print('Accuracy score: ', format(accuracy_score(valid_Y, Y_pred)))         #查看校验集的准确率
 
-Y_test=predict(test_X,P_p,P_0_c,P_1_c)
+Y_test=predict(test_X,P_p,P_0_c,P_1_c)                                     #对测试集进行分类
 
 data_test['Label']=''
 data_test.drop(['Text'],axis=1,inplace=True)
